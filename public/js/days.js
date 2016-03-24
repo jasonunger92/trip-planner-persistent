@@ -20,7 +20,6 @@ var daysModule = (function () {
   // application state
 
   var days = [],
-      dayObjs = [],
       currentDay;
 
   // jQuery selections
@@ -46,31 +45,13 @@ var daysModule = (function () {
     $removeButton.on('click', deleteCurrentDay);
   });
 
-  function addDay (click,theDay) {
+  function addDay () {
     if (this && this.blur) this.blur(); // removes focus box from buttons
     var newDay = dayModule.create({ number: days.length + 1 }); // dayModule
-    if (!theDay) {
-      $.post('/api/days/?num='+newDay.number)
-      .done(function(day) {
-        days.push(newDay);
-        dayObjs.push(day);
-        if (days.length === 1) {
-          currentDay = newDay;
-          switchTo(currentDay);
-        }
-        return newDay;
-      })
-      .fail(function(error) {
-        console.error(error.statusText);
-      }); 
-    } else {
-      days.push(newDay);
-      dayObjs.push(theDay);
-      if (days.length === 1) {
-        currentDay = newDay;
-        switchTo(currentDay);
-      }
-      return newDay;
+    days.push(newDay);
+    if (days.length === 1) {
+      currentDay = newDay;
+      switchTo(currentDay);
     }
   }
 
@@ -80,43 +61,22 @@ var daysModule = (function () {
     // remove from the collection
     var index = days.indexOf(currentDay),
       previousDay = days.splice(index, 1)[0],
-      newCurrent = days[index] || days[index - 1],
-      prevDayObj = dayObjs.splice(index, 1)[0];
-
-    $.ajax({
-      method: 'DELETE',
-      url: '/api/days/'+prevDayObj._id
-    })
-    .done(function() {
-      // fix the remaining day numbers
-      days.forEach(function (day, i) {
-        day.setNumber(i + 1);
-      });
-      switchTo(newCurrent);
-      previousDay.hideButton();
-    })
-    .fail(function(err) {
-      console.error(err.statusText);
+      newCurrent = days[index] || days[index - 1];
+    // fix the remaining day numbers
+    days.forEach(function (day, i) {
+      day.setNumber(i + 1);
     });
-  }
-
-  function load () {
-    $.get('/api/days/')
-    .done(function(dayArray) {
-      dayArray.forEach(function(dayObj) {
-        var theirDay = addDay(null,dayObj);
-        theirDay.hotel = dayObj.hotel[0];
-        theirDay.restaurants = dayObj.restaurant;
-        theirDay.activities = dayObj.activity;
-      });
-    });
+    switchTo(newCurrent);
+    previousDay.hideButton();
   }
 
   // globally accessible module methods
 
   var methods = {
 
-    load: load,
+    load: function () {
+      $(addDay);
+    },
 
     switchTo: switchTo,
 

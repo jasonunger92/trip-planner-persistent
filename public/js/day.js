@@ -90,29 +90,19 @@ var dayModule = (function () {
   // day updating
 
   Day.prototype.addAttraction = function (attraction) {
-    var self = this;
-    $.ajax({
-      method: 'PUT',
-      url: '/api/days/'+self.number+'/'+attraction.type+'/'+attraction._id+'/add'
-    })
-    .done(function(day) {
-      // adding to the day object
-      switch (attraction.type) {
-        case 'hotel':
-          if (self.hotel) self.hotel.hide();
-          self.hotel = attraction; break;
-        case 'restaurant':
-          utilsModule.pushUnique(self.restaurants, attraction); break;
-        case 'activity':
-          utilsModule.pushUnique(self.activities, attraction); break;
-        default: console.error('bad type:', attraction);
-      }
-      // activating UI
-      attraction.show();
-    })
-    .fail(function(err) {
-      console.error(err);
-    });
+    // adding to the day object
+    switch (attraction.type) {
+      case 'hotel':
+        if (this.hotel) this.hotel.hide();
+        this.hotel = attraction; break;
+      case 'restaurant':
+        utilsModule.pushUnique(this.restaurants, attraction); break;
+      case 'activity':
+        utilsModule.pushUnique(this.activities, attraction); break;
+      default: console.error('bad type:', attraction);
+    }
+    // activating UI
+    attraction.show();
   };
 
   Day.prototype.removeAttraction = function (attraction) {
