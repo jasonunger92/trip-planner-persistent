@@ -25,13 +25,13 @@ $(function(){
     var clientAttraction = attractionsModule.create(databaseAttraction);
     var $option = $('<option></option>') // makes a new option tag
       .text(clientAttraction.name) // with this inner text
-      .data(clientAttraction); // associates the attraction object with this option
+      .data({ obj: clientAttraction}); // associates the attraction object with this option
     this.append($option); // add the option to this select
   }
 
   // what to do when the `+` button next to a `select` is clicked
   $optionsPanel.on('click', 'button[data-action="add"]', function () {
-    var attraction = $(this).siblings('select').find(':selected').data();
+    var attraction = $(this).siblings('select').find(':selected').data().obj;
     daysModule.addToCurrent(attraction);
   });
 
