@@ -13,11 +13,16 @@
 $(function(){
 
   var $optionsPanel = $('#options-panel');
-
+  $.get('/api/attractions')
+    .done(function(response) {
+      response[0].forEach(makeOption, $optionsPanel.find('#hotel-choices'));
+      response[1].forEach(makeOption, $optionsPanel.find('#restaurant-choices'));
+      response[2].forEach(makeOption, $optionsPanel.find('#activity-choices'));
+    })
+    .fail(function(error) {
+      console.error(error.message);
+    });
   // remember, second param of `forEach` is a `this` binding
-  hotels.forEach(makeOption, $optionsPanel.find('#hotel-choices'));
-  restaurants.forEach(makeOption, $optionsPanel.find('#restaurant-choices'));
-  activities.forEach(makeOption, $optionsPanel.find('#activity-choices'));
 
   // make a single `option` tag & associate it with an attraction object
   function makeOption (databaseAttraction) {
