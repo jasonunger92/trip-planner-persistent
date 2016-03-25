@@ -23,7 +23,6 @@ router.delete('/:dayNum', function(req,res,next) {
 });
 
 router.post('/', function(req,res,next) {
-  console.log(req.query.num);
   Day.create({
     number: parseInt(req.query.num),
     hotel: null

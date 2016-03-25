@@ -61,20 +61,17 @@ var daysModule = (function () {
     } else {
       var newDay = dayModule.create(day);
       if (day.hotel) {
+        day.hotel.type = 'hotel';
         newDay.hotel = attractionsModule.create(day.hotel);
-        newDay.hotel.type = 'hotel';
       }
       newDay.restaurant = day.restaurant.map(function(rest) {
-        var differentThing = attractionsModule.create(rest);
-        differentThing.type = 'restaurant';
-        return differentThing;
+        rest.type = 'restaurant';
+        return attractionsModule.create(rest);
       });
       newDay.activity = day.activity.map(function(act) {
-        var something = attractionsModule.create(act);
-        something.type = 'activity';
-        return something;
+        act.type = 'activity';
+        return attractionsModule.create(act);
       });
-      console.log(newDay);
       days.push(newDay);
       if (days.length === 1) {
         currentDay = newDay;
