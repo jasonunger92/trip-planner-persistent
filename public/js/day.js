@@ -97,7 +97,7 @@ var dayModule = (function () {
       method: 'PUT',
       url: '/api/days/'+self.number+'/'+attraction.type+'/'+attraction._id+'/add'
     })
-    .done(function (day) {
+    .done(function () {
       // adding to the day object
       switch (attraction.type) {
         case 'hotel':
@@ -121,7 +121,7 @@ var dayModule = (function () {
       method: 'PUT',
       url: '/api/days/'+self.number+'/'+attraction.type+'/'+attraction._id+'/delete'
     })
-    .done(function (deletedAttraction) {
+    .done(function () {
       // removing from the day object
       switch (attraction.type) {
         case 'hotel':
