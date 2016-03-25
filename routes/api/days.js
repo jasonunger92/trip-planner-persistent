@@ -4,40 +4,71 @@ var Day = models.Day;
 module.exports = router;
 
 router.get('/', function(req,res,next) {
-  
+  Day.find().populate('hotel restaurant activity')
+  .then(function(dayArr) {
+    res.json(dayArr);
+  })
+  .then(null,next);
 });
 
-router.delete('/:dayID', function(req,res,next) {
-  
+router.delete('/:dayNum', function(req,res,next) {
+  Day.findOne({number: parseInt(req.params.dayNum)})
+  .then(function (day) {
+    return day.remove();
+  })
+  .then(function () {
+    res.sendStatus(204);
+  })
+  .then(null,next);
 });
 
 router.post('/', function(req,res,next) {
-  
+  console.log(req.query.num);
+  Day.create({
+    number: parseInt(req.query.num),
+    hotel: null
+  })
+  .then(function (day) {
+    res.json(day);
+  })
+  .then(null,next);
 });
 
 router.put('/:dayNum/:type/:ID/add', function(req,res,next) {
-
+  var number = parseInt(req.params.dayNum);
+  var type = req.params.type;
+  var attractionID = req.params.ID;
+  Day.findOne({number: number})
+  .then(function (day) {
+    if (type === 'hotel') {
+      day[type] = attractionID;
+    } else {
+      day[type].push(attractionID);
+    }
+    return day.save();
+  })
+  .then(function (day) {
+    res.json(day);
+  })
+  .then(null,next);
 });
 
 router.put('/:dayNum/:type/:hotelID/delete', function(req,res,next) {
-  // var number = parseInt(req.params.dayNuym);
-  // var type = req.params.type;
-  // var attractionID = req.params.ID;
-  
+  var number = parseInt(req.params.dayNum);
+  var type = req.params.type;
+  var attractionID = req.params.ID;
+  Day.findOne({number: number})
+  .then(function (day) {
+    if (type === 'hotel') {
+      day[type] = null;
+    } else {
+      var index = day[type].indexOf(attractionID);
+      day[type].splice(index,1);
+    }
+    return day.save();
+  })
+  .then(function (day) {
+    res.json(day);
+  })
+  .then(null,next);
 });
-
-// router.put('/:dayID/restaurant/:restaurantID/add', function(req,res,next) {
-
-// });
-
-// router.put('/:dayID/restaurant/:restaurantID/delete', function(req,res,next) {
-
-// });
-
-// router.put('/:dayID/activity/:activityID/add', function(req,res,next) {
-
-// });
-
-// router.put('/:dayID/activity/:activityID/delete', function(req,res,next) {
-
-// });

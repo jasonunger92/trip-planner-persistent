@@ -45,13 +45,41 @@ var daysModule = (function () {
     $removeButton.on('click', deleteCurrentDay);
   });
 
-  function addDay () {
+  function addDay (click,day) {
     if (this && this.blur) this.blur(); // removes focus box from buttons
-    var newDay = dayModule.create({ number: days.length + 1 }); // dayModule
-    days.push(newDay);
-    if (days.length === 1) {
-      currentDay = newDay;
-      switchTo(currentDay);
+    if (!day) {
+      $.post('/api/days/?num='+(days.length+1))
+      .done(function (createdDay) {
+        var newDay = dayModule.create(createdDay);
+        days.push(newDay);
+        if (days.length === 1) {
+          currentDay = newDay;
+          switchTo(currentDay);
+        }
+      })
+      .fail(console.error.bind(console));
+    } else {
+      var newDay = dayModule.create(day);
+      if (day.hotel) {
+        newDay.hotel = attractionsModule.create(day.hotel);
+        newDay.hotel.type = 'hotel';
+      }
+      newDay.restaurant = day.restaurant.map(function(rest) {
+        var differentThing = attractionsModule.create(rest);
+        differentThing.type = 'restaurant';
+        return differentThing;
+      });
+      newDay.activity = day.activity.map(function(act) {
+        var something = attractionsModule.create(act);
+        something.type = 'activity';
+        return something;
+      });
+      console.log(newDay);
+      days.push(newDay);
+      if (days.length === 1) {
+        currentDay = newDay;
+        switchTo(currentDay);
+      }
     }
   }
 
@@ -62,21 +90,39 @@ var daysModule = (function () {
     var index = days.indexOf(currentDay),
       previousDay = days.splice(index, 1)[0],
       newCurrent = days[index] || days[index - 1];
-    // fix the remaining day numbers
-    days.forEach(function (day, i) {
-      day.setNumber(i + 1);
+    $.ajax({
+      method: 'DELETE',
+      url: '/api/days/'+previousDay.number
+    })
+    .done(function () {
+      // fix the remaining day numbers
+      days.forEach(function (day, i) {
+        day.setNumber(i + 1);
+      });
+      switchTo(newCurrent);
+      previousDay.hideButton();
+    })
+    .fail(console.error.bind(console));
+  }
+
+  function load () {
+    $.get('/api/days/')
+    .done(function (dayArr) {
+      if (dayArr.length === 0) {
+        addDay();
+      } else {
+        dayArr.forEach(function (day) {
+          addDay(null,day);
+        }); 
+      }
     });
-    switchTo(newCurrent);
-    previousDay.hideButton();
   }
 
   // globally accessible module methods
 
   var methods = {
 
-    load: function () {
-      $(addDay);
-    },
+    load: load,
 
     switchTo: switchTo,
 

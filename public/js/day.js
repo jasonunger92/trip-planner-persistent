@@ -27,10 +27,10 @@ var dayModule = (function () {
 
   function Day (data) {
     // for brand-new days
-    this.number = 0;
-    this.hotel = null;
-    this.restaurants = [];
-    this.activities = [];
+    this.number = data.number || 0;
+    this.hotel = data.hotel || null;
+    this.restaurant = data.restaurant || [];
+    this.activity = data.activity || [];
     // for days based on existing data
     utilsModule.merge(data, this);
     // remainder of constructor
@@ -72,8 +72,8 @@ var dayModule = (function () {
     // attractions UI
     function show (attraction) { attraction.show(); }
     if (this.hotel) show(this.hotel);
-    this.restaurants.forEach(show);
-    this.activities.forEach(show);
+    this.restaurant.forEach(show);
+    this.activity.forEach(show);
   };
 
   Day.prototype.hide = function () {
@@ -81,43 +81,61 @@ var dayModule = (function () {
     this.$button.removeClass('current-day');
     $dayTitle.text('Day not Loaded');
     // attractions UI
-    function hide (attraction) { attraction.hide(); }
+    function hide (attraction) {
+      return attraction.hide();
+    }
     if (this.hotel) hide(this.hotel);
-    this.restaurants.forEach(hide);
-    this.activities.forEach(hide);
+    this.restaurant.forEach(hide);
+    this.activity.forEach(hide);
   };
 
   // day updating
 
   Day.prototype.addAttraction = function (attraction) {
-    // adding to the day object
-    switch (attraction.type) {
-      case 'hotel':
-        if (this.hotel) this.hotel.hide();
-        this.hotel = attraction; break;
-      case 'restaurant':
-        utilsModule.pushUnique(this.restaurants, attraction); break;
-      case 'activity':
-        utilsModule.pushUnique(this.activities, attraction); break;
-      default: console.error('bad type:', attraction);
-    }
-    // activating UI
-    attraction.show();
+    var self = this;
+    $.ajax({
+      method: 'PUT',
+      url: '/api/days/'+self.number+'/'+attraction.type+'/'+attraction._id+'/add'
+    })
+    .done(function (day) {
+      // adding to the day object
+      switch (attraction.type) {
+        case 'hotel':
+          if (self.hotel) self.hotel.hide();
+          self.hotel = attraction; break;
+        case 'restaurant':
+          utilsModule.pushUnique(self.restaurant, attraction); break;
+        case 'activity':
+          utilsModule.pushUnique(self.activity, attraction); break;
+        default: console.error('bad type:', attraction);
+      }
+      // activating UI
+      attraction.show();
+    })
+    .fail(console.error.bind(console));
   };
 
   Day.prototype.removeAttraction = function (attraction) {
-    // removing from the day object
-    switch (attraction.type) {
-      case 'hotel':
-        this.hotel = null; break;
-      case 'restaurant':
-        utilsModule.remove(this.restaurants, attraction); break;
-      case 'activity':
-        utilsModule.remove(this.activities, attraction); break;
-      default: console.error('bad type:', attraction);
-    }
-    // deactivating UI
-    attraction.hide();
+    var self = this;
+    $.ajax({
+      method: 'PUT',
+      url: '/api/days/'+self.number+'/'+attraction.type+'/'+attraction._id+'/delete'
+    })
+    .done(function (deletedAttraction) {
+      // removing from the day object
+      switch (attraction.type) {
+        case 'hotel':
+          self.hotel = null; break;
+        case 'restaurant':
+          utilsModule.remove(self.restaurant, attraction); break;
+        case 'activity':
+          utilsModule.remove(self.activity, attraction); break;
+        default: console.error('bad type:', attraction);
+      }
+      // deactivating UI
+      attraction.hide();
+    })
+    .fail(console.error.bind(console));
   };
 
   // globally accessible module methods
