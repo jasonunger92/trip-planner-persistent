@@ -35,6 +35,7 @@ $(function(){
 
   // what to do when the `+` button next to a `select` is clicked
   $optionsPanel.on('click', 'button[data-action="add"]', function () {
+    $(this).prop('disabled',true);
     var attraction = $(this).siblings('select').find(':selected').data().obj;
     daysModule.addToCurrent(attraction);
   });

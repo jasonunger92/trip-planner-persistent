@@ -1,10 +1,12 @@
 var mongoose = require('mongoose');
-var PlaceSchema = require('./place').schema;
+var placeSchema = require('./place').schema;
 
-var ActivitySchema = new mongoose.Schema({
+var activitySchema = new mongoose.Schema({
   name: String,
-  place: PlaceSchema,
+  place: placeSchema,
   age_range: String
-})
+});
 
-module.exports = mongoose.model('Activity', ActivitySchema);
+activitySchema.plugin(require('./locationPlugin.js'));
+
+module.exports = mongoose.model('Activity', activitySchema);

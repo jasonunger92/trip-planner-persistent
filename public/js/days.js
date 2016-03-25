@@ -46,9 +46,10 @@ var daysModule = (function () {
   });
 
   function addDay (click,day) {
+    $addButton.prop('disabled',true);
     if (this && this.blur) this.blur(); // removes focus box from buttons
     if (!day) {
-      $.post('/api/days/?num='+(days.length+1))
+      $.post('/api/days/addDay',{number: days.length+1})
       .done(function (createdDay) {
         var newDay = dayModule.create(createdDay);
         days.push(newDay);
@@ -56,6 +57,7 @@ var daysModule = (function () {
           currentDay = newDay;
           switchTo(currentDay);
         }
+        $addButton.prop('disabled',false);
       })
       .fail(console.error.bind(console));
     } else {
@@ -77,10 +79,13 @@ var daysModule = (function () {
         currentDay = newDay;
         switchTo(currentDay);
       }
+      $addButton.prop('disabled',false);
     }
   }
 
   function deleteCurrentDay () {
+    $removeButton.prop('disabled',true);
+    debugger;
     // prevent deleting last day
     if (days.length < 2 || !currentDay) return;
     // remove from the collection
@@ -89,7 +94,8 @@ var daysModule = (function () {
       newCurrent = days[index] || days[index - 1];
     $.ajax({
       method: 'DELETE',
-      url: '/api/days/'+previousDay.number
+      url: '/api/days/deleteDay',
+      data: {number: previousDay.number}
     })
     .done(function () {
       // fix the remaining day numbers
@@ -98,6 +104,7 @@ var daysModule = (function () {
       });
       switchTo(newCurrent);
       previousDay.hideButton();
+      $removeButton.prop('disabled',false);
     })
     .fail(console.error.bind(console));
   }

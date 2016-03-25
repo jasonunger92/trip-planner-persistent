@@ -1,12 +1,13 @@
 var mongoose = require('mongoose');
-var PlaceSchema = require('./place').schema;
+var placeSchema = require('./place').schema;
 
-var RestaurantSchema = new mongoose.Schema({
+var restaurantSchema = new mongoose.Schema({
   name: String,
-  place: PlaceSchema,
+  place: placeSchema,
   price: { type: Number, min: 1, max: 5 },
   cuisine: String
 });
 
+restaurantSchema.plugin(require('./locationPlugin.js'));
 
-module.exports = mongoose.model('Restaurant', RestaurantSchema);
+module.exports = mongoose.model('Restaurant', restaurantSchema);

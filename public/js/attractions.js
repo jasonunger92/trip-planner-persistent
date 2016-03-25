@@ -41,6 +41,7 @@ var attractionsModule = (function () {
       .append($button);
     var self = this;
     $button.on('click', function () {
+      $(self).prop('disabled',true);
       daysModule.removeFromCurrent(self); // remove from day model
     });
     return this;

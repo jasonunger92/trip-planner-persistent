@@ -1,11 +1,13 @@
 var mongoose = require('mongoose');
-var PlaceSchema = require('./place').schema;
+var placeSchema = require('./place').schema;
 
-var HotelSchema = new mongoose.Schema({
+var hotelSchema = new mongoose.Schema({
   name: String,
-  place: PlaceSchema,
+  place: placeSchema,
   num_stars: { type: Number, min: 1, max: 5 },
   amenities: { type: [String] }
 });
 
-module.exports = mongoose.model('Hotel', HotelSchema);
+hotelSchema.plugin(require('./locationPlugin.js'));
+
+module.exports = mongoose.model('Hotel', hotelSchema);

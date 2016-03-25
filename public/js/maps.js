@@ -56,7 +56,7 @@ var mapModule = (function () {
         restaurant: '/images/restaurant.png',
         activity: '/images/star-3.png'
       };
-      var coords = attraction.place.location;
+      var coords = attraction.location;
       var options = {
         icon: iconPath[attraction.type],
         position: new google.maps.LatLng(coords[0], coords[1]),

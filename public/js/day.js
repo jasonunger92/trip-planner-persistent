@@ -95,9 +95,11 @@ var dayModule = (function () {
     var self = this;
     $.ajax({
       method: 'PUT',
-      url: '/api/days/'+self.number+'/'+attraction.type+'/'+attraction._id+'/add'
+      url: '/api/days/'+self.number+'/add',
+      data: {type: attraction.type, ID: attraction._id}
     })
     .done(function () {
+      $('select[data-type="'+attraction.type+'"]').siblings('button').prop('disabled',false);
       // adding to the day object
       switch (attraction.type) {
         case 'hotel':
@@ -119,7 +121,8 @@ var dayModule = (function () {
     var self = this;
     $.ajax({
       method: 'PUT',
-      url: '/api/days/'+self.number+'/'+attraction.type+'/'+attraction._id+'/delete'
+      url: '/api/days/'+self.number+'/delete',
+      data: {type: attraction.type, ID: attraction._id}
     })
     .done(function () {
       // removing from the day object

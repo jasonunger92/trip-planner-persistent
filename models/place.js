@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var PlaceSchema = new mongoose.Schema({
+var placeSchema = new mongoose.Schema({
 	address: String,
 	city: String,
 	state: String,
@@ -8,4 +8,4 @@ var PlaceSchema = new mongoose.Schema({
 	location: [Number]
 });
 
-module.exports = mongoose.model('Place', PlaceSchema);
+module.exports = mongoose.model('Place', placeSchema);

@@ -1,5 +1,4 @@
 var mongoose = require('mongoose');
-var PlaceSchema = require('./place').schema;
 var Promise = require('bluebird');
 
 var daySchema = new mongoose.Schema({
