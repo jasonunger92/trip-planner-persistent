@@ -63,15 +63,12 @@ var daysModule = (function () {
     } else {
       var newDay = dayModule.create(day);
       if (day.hotel) {
-        day.hotel.type = 'hotel';
         newDay.hotel = attractionsModule.create(day.hotel);
       }
       newDay.restaurant = day.restaurant.map(function(rest) {
-        rest.type = 'restaurant';
         return attractionsModule.create(rest);
       });
       newDay.activity = day.activity.map(function(act) {
-        act.type = 'activity';
         return attractionsModule.create(act);
       });
       days.push(newDay);

@@ -8,6 +8,8 @@ var restaurantSchema = new mongoose.Schema({
   cuisine: String
 });
 
+restaurantSchema.virtual('type').get(() => 'restaurant');
+
 restaurantSchema.plugin(require('./locationPlugin.js'));
 
 module.exports = mongoose.model('Restaurant', restaurantSchema);

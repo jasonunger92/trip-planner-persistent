@@ -7,6 +7,8 @@ var activitySchema = new mongoose.Schema({
   age_range: String
 });
 
+activitySchema.virtual('type').get(() => 'activity');
+
 activitySchema.plugin(require('./locationPlugin.js'));
 
 module.exports = mongoose.model('Activity', activitySchema);

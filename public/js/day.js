@@ -95,7 +95,7 @@ var dayModule = (function () {
     var self = this;
     $.ajax({
       method: 'PUT',
-      url: '/api/days/'+self.number+'/add',
+      url: '/api/days/'+self._id+'/addAttraction',
       data: {type: attraction.type, ID: attraction._id}
     })
     .done(function () {
@@ -121,7 +121,7 @@ var dayModule = (function () {
     var self = this;
     $.ajax({
       method: 'PUT',
-      url: '/api/days/'+self.number+'/delete',
+      url: '/api/days/'+self._id+'/removeAttraction',
       data: {type: attraction.type, ID: attraction._id}
     })
     .done(function () {

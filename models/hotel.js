@@ -8,6 +8,8 @@ var hotelSchema = new mongoose.Schema({
   amenities: { type: [String] }
 });
 
+hotelSchema.virtual('type').get(() => 'hotel');
+
 hotelSchema.plugin(require('./locationPlugin.js'));
 
 module.exports = mongoose.model('Hotel', hotelSchema);

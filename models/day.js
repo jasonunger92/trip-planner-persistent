@@ -17,7 +17,7 @@ var daySchema = new mongoose.Schema({
   }]
 });
 
-daySchema.pre('remove', function(next) {
+daySchema.pre('remove', function (next) {
   var num = this.number;
   this.constructor.find({number: {$gt: num}})
   .then(function(dayArray) {

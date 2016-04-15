@@ -33,11 +33,10 @@ router.post('/addDay', function(req,res,next) {
   .then(null,next);
 });
 
-router.put('/:dayNum/add', function(req,res,next) {
-  var number = parseInt(req.params.dayNum);
+router.put('/:dayId/addAttraction', function(req,res,next) {
   var type = req.body.type;
   var attractionID = req.body.ID;
-  Day.findOne({number: number})
+  Day.findOne({_id: req.params.dayId})
   .then(function (day) {
     if (type === 'hotel') {
       day[type] = attractionID;
@@ -52,11 +51,10 @@ router.put('/:dayNum/add', function(req,res,next) {
   .then(null,next);
 });
 
-router.put('/:dayNum/delete', function(req,res,next) {
-  var number = parseInt(req.params.dayNum);
+router.put('/:dayId/removeAttraction', function(req,res,next) {
   var type = req.body.type;
   var attractionID = req.body.ID;
-  Day.findOne({number: number})
+  Day.findOne({_id: req.params.dayId})
   .then(function (day) {
     if (type === 'hotel') {
       day[type] = null;
